@@ -1,0 +1,21 @@
+{
+  "name": "bio-cowork-ui",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "医研协作台 · BioCowork — 面向临床/生医人员的低门槛 Agentic 协作台原型",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.8"
+  }
+}

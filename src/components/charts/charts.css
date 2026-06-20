@@ -1,0 +1,64 @@
+.chart{width:100%}
+.chart svg{display:block; width:100%; height:auto}
+.chart .axis-line{stroke:var(--ink); stroke-width:1.2}
+.chart .grid{stroke:rgba(31,30,27,.08); stroke-width:1}
+.chart .grid-dash{stroke:rgba(31,30,27,.16); stroke-width:1; stroke-dasharray:3 4}
+.chart .tick-txt{fill:var(--ink-faint); font-size:10.5px; font-family:var(--sans)}
+.chart .axis-title{fill:var(--ink-soft); font-size:11px; font-weight:600; font-family:var(--sans)}
+.chart .draw{animation:draw 1.6s var(--ease-out) forwards}
+@keyframes draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+
+.chart-legend{display:flex; gap:16px; flex-wrap:wrap; margin:2px 0 12px; font-size:12.5px}
+.chart-legend .lg{display:inline-flex; align-items:center; gap:7px; color:var(--ink-soft)}
+.chart-legend .sw{width:16px; height:3px; border-radius:2px}
+
+.risk-table{width:100%; border-collapse:collapse; margin-top:14px; font-size:12px}
+.risk-table caption{text-align:left; color:var(--ink-faint); font-size:11px; font-weight:600; letter-spacing:.4px; text-transform:uppercase; margin-bottom:6px}
+.risk-table th, .risk-table td{padding:5px 8px; text-align:center; font-variant-numeric:tabular-nums}
+.risk-table th:first-child, .risk-table td:first-child{text-align:left; color:var(--ink-soft); font-weight:600}
+.risk-table thead th{color:var(--ink-faint); font-weight:600; border-bottom:1px solid var(--line)}
+.risk-table .grp-dot{display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:6px; vertical-align:middle}
+
+.stat-strip{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+.stat-pill{
+  background:var(--bg-panel); border:1px solid var(--line); border-radius:11px; padding:9px 13px; min-width:120px;
+}
+.stat-pill .k{font-size:10.5px; color:var(--ink-faint); letter-spacing:.4px; text-transform:uppercase; font-weight:600}
+.stat-pill .v{font-size:15px; font-weight:600; font-family:var(--serif); margin-top:2px}
+.stat-pill .v small{font-family:var(--sans); font-size:11.5px; color:var(--ink-soft); font-weight:500}
+.stat-pill.good{background:var(--teal-wash); border-color:var(--teal-line)}
+.stat-pill.good .v{color:var(--teal-deep)}
+
+/* —— 数据表（Table 1 / Cox 表）—— */
+.dtable{width:100%; border-collapse:collapse; font-size:13px}
+.dtable caption{text-align:left; font-family:var(--serif); font-weight:600; font-size:15px; margin-bottom:10px}
+.dtable th, .dtable td{padding:9px 12px; border-bottom:1px solid var(--line-soft); text-align:right; font-variant-numeric:tabular-nums}
+.dtable th:first-child, .dtable td:first-child{text-align:left}
+.dtable thead th{color:var(--ink-soft); font-weight:600; border-bottom:1.5px solid var(--line); white-space:nowrap}
+.dtable tbody tr:hover{background:var(--bg-panel)}
+.dtable .pcol{color:var(--ink-soft)}
+.dtable .sig{color:var(--teal-deep); font-weight:600}
+.dtable .notes{margin-top:12px; font-size:11.5px; color:var(--ink-faint); line-height:1.6}
+.dtable .notes div{margin-top:3px}
+
+/* —— 森林图 —— */
+.forest-row{display:grid; grid-template-columns:200px 1fr 132px; align-items:center; gap:6px; padding:7px 0; border-bottom:1px solid var(--line-soft)}
+.forest-row:last-child{border-bottom:none}
+.forest-row .fv{font-size:13px; font-weight:600}
+.forest-row .fnum{font-size:12px; color:var(--ink-soft); text-align:right; font-variant-numeric:tabular-nums}
+.forest-row .fnum .p{color:var(--ink-faint)}
+.forest-head{display:grid; grid-template-columns:200px 1fr 132px; gap:6px; font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.4px; font-weight:600; padding-bottom:6px; border-bottom:1.5px solid var(--line)}
+.forest-head .c3{text-align:right}
+
+/* 森林图轨道（百分比定位，清晰不变形） */
+.ftrack{position:relative; height:24px}
+.ftrack .ref{position:absolute; top:2px; bottom:2px; border-left:1px dashed rgba(31,30,27,.26)}
+.ftrack .ci{position:absolute; top:11px; height:2px; border-radius:2px}
+.ftrack .cap{position:absolute; top:7px; width:2px; height:10px; border-radius:1px; transform:translateX(-1px)}
+.ftrack .mk{position:absolute; top:7.5px; width:9px; height:9px; border-radius:2px; transform:translate(-4.5px,0) rotate(45deg)}
+.faxis{position:relative; height:16px}
+.faxis .tk{position:absolute; transform:translateX(-50%); font-size:10.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums}
+@media (max-width:640px){
+  .forest-row, .forest-head{grid-template-columns:130px 1fr 96px}
+  .forest-row .fv{font-size:12px}
+}

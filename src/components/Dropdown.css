@@ -1,0 +1,23 @@
+.dd-wrap{position:relative; display:inline-block}
+.dd-menu{
+  position:absolute; z-index:40; min-width:248px;
+  background:var(--card); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow); padding:6px; animation:dd-pop .2s var(--ease-out);
+}
+.dd-bottom{top:calc(100% + 8px)}
+.dd-top{bottom:calc(100% + 8px)}
+.dd-align-left{left:0}
+.dd-align-right{right:0}
+@keyframes dd-pop{from{opacity:0; transform:translateY(6px) scale(.97)}to{opacity:1; transform:none}}
+
+.mi{
+  display:flex; gap:11px; align-items:flex-start; padding:10px 11px; border-radius:10px; cursor:pointer;
+  transition:background .12s; width:100%; text-align:left; border:none; background:transparent; color:inherit;
+}
+.mi:hover{background:var(--bg-panel)}
+.mi .ic{color:var(--teal-deep); margin-top:1px}
+.mi .mt{font-size:13.5px; font-weight:600}
+.mi .ms{font-size:12px; color:var(--ink-faint); margin-top:1px}
+.mi.sel{background:var(--teal-wash)}
+.mi.sel .ms{color:var(--teal-deep); opacity:.85}
+.menu-sep{height:1px; background:var(--line-soft); margin:5px 6px}
