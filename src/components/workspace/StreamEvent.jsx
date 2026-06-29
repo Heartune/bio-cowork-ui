@@ -110,6 +110,34 @@ export default function StreamEvent({ ev, onAllow, onDeny, onOpenArtifact }) {
       )
     }
 
+    case 'compaction':
+      return (
+        <div className="ev">
+          <span className="ava"><Icon name="refresh" size={15} /></span>
+          <div className="ebody">
+            <div className="compaction-card">
+              <div className="ch">
+                <Icon name="refresh" size={16} className="ic" />
+                上下文已压缩{ev.auto ? '（自动）' : ''} · 折叠了前面 {ev.folded} 条记录
+                <span className="cbadge">关键结论与数字已逐字保留</span>
+              </div>
+              <div className="csub">为腾出对话空间，较早的过程已收拢为下面这份锚定摘要；后续分析以它为准。</div>
+              <div className="csections">
+                {ev.sections?.map((sec, i) => (
+                  <div className={'csec' + (sec.verbatim ? ' verbatim' : '')} key={i}>
+                    <div className="csec-h">
+                      {sec.h}
+                      {sec.verbatim && <span className="vtag">逐字保留</span>}
+                    </div>
+                    <ul>{sec.items.map((it, j) => <li key={j}>{it}</li>)}</ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+
     case 'summary':
       return (
         <div className="ev">

@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import Icon from '../lib/Icon.jsx'
 import { useStore } from '../lib/store.jsx'
 import { getScenario } from '../lib/scenarios.js'
 import { useRunEngine } from '../lib/runEngine.js'
+import { computeUsage } from '../lib/contextUsage.js'
+import { buildCompactionEvent } from '../lib/compactionSummary.js'
 import StreamEvent from '../components/workspace/StreamEvent.jsx'
 import PlanCard from '../components/workspace/PlanCard.jsx'
 import ArtifactPanel from '../components/workspace/ArtifactPanel.jsx'
@@ -37,6 +39,29 @@ export default function Session() {
   const streamRef = useRef(null)
   const prevArtCount = useRef(session?.artifacts?.length || 0)
   const prevEvCount = useRef(session?.events?.length || 0)
+  const compactGuard = useRef(-1)
+
+  // 上下文用量（模拟）：平时灰 → ≥75% 预警建议手动压缩 → ≥95% 自动兜底
+  const usage = useMemo(() => computeUsage(session), [session?.events, session?.prompt])
+
+  const doCompact = useCallback((auto = false) => {
+    const ev = buildCompactionEvent(session, { auto })
+    updateSession(id, s => ({ events: [...s.events, ev] }))
+    toast(
+      auto ? '对话较长，已自动压缩上下文 · 关键结论与数字已逐字保留'
+           : '已压缩上下文 · 关键结论与数字已逐字保留',
+      auto ? { warn: true } : {}
+    )
+  }, [session, id, updateSession, toast])
+
+  // 自动兜底：用量摸到临界且没人手动压时，自动插一张摘要卡（按事件数去重，避免连发）
+  useEffect(() => {
+    if (!session || usage.level !== 'critical') return
+    const n = session.events?.length || 0
+    if (compactGuard.current === n) return
+    compactGuard.current = n
+    doCompact(true)
+  }, [usage.level, session?.events?.length, session, doCompact])
 
   // 新产物出现：自动选中并切到「产物」页
   useEffect(() => {
@@ -107,6 +132,15 @@ export default function Session() {
         </div>
         <div className="ws-controls">
           <span className={'status-chip ' + st.cls}><span className="d" />{st.label}</span>
+          <button
+            className={'ctx-meter ' + usage.level}
+            title={`上下文用量约 ${Math.round(usage.pct * 100)}%（模拟）` + (usage.level === 'ok' ? '' : ' · 点击压缩，关键结论与数字会逐字保留')}
+            onClick={() => usage.level !== 'ok' && doCompact(false)}
+            disabled={usage.level === 'ok'}
+          >
+            <span className="ring" style={{ '--p': usage.pct }} />
+            <span className="ctx-num">{Math.round(usage.pct * 100)}%</span>
+          </button>
           {session.status === 'running' && (
             <button className="btn ghost" onClick={engine.pause} title="暂停"><Icon name="pause" size={15} className="ic" />暂停</button>
           )}
@@ -155,6 +189,20 @@ export default function Session() {
               <div className="working" style={{ color: 'var(--ink-faint)' }}><Icon name="pause" size={15} /> 已暂停 · 在下方补充后点「继续」，或直接发送让我接着做</div>
             )}
           </div>
+
+          {/* 上下文预警（≥75% 且尚未到自动线时出现） */}
+          {usage.level === 'warn' && (
+            <div className="ctx-warn">
+              <Icon name="warn" size={16} className="ic" />
+              <div className="cw-text">
+                <b>对话有点长了</b>，再继续可能影响后续质量。建议现在压缩一下——我会把
+                <b>研究问题、方法、以及工具算出的每个数字</b>都逐字保留，只收拢中间过程。
+              </div>
+              <button className="btn primary cw-btn" onClick={() => doCompact(false)}>
+                <Icon name="refresh" size={15} className="ic" />一键压缩
+              </button>
+            </div>
+          )}
 
           {/* 操纵 / 补充输入 */}
           <div className="steer-box">
